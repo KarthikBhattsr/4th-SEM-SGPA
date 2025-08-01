@@ -250,6 +250,28 @@
       const result = document.getElementById("cgpaResult");
       result.className = `result-card ${gradeColor(cgpa)}`;
       result.innerText = `Your CGPA is: ${cgpa}`;
+      // ✅ SEND DATA TO GOOGLE SHEETS
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbz6inmGozYrRW0vkNlRM8G0MLq2306SBEn8dNj0IhlXvQun5wwST0ex-LAw2-UekZrgHw/exec'; // REPLACE this
+
+      const payload = {
+        usn: usn,
+        sgpa: sgpa4.toFixed(2),
+        sgpa1: sgpas[0].toFixed(2),
+        sgpa2: sgpas[1].toFixed(2),
+        sgpa3: sgpas[2].toFixed(2),
+        sgpa4: sgpa4.toFixed(2),
+        cgpa: cgpa
+      };
+
+      fetch(scriptURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.text())
+      .then(text => console.log("✅ Sent to Google Sheet:", text))
+      .catch(err => console.error("❌ Error sending to sheet:", err));
+    }
     }
   </script>
 
@@ -261,42 +283,5 @@
     gtag('js', new Date());
     gtag('config', 'G-7480BZDXWF');
   </script>
-
-  <script>
-  function calculateCGPA() {
-  const sgpa1 = parseFloat(document.getElementById("sgpa1").value);
-  const sgpa2 = parseFloat(document.getElementById("sgpa2").value);
-  const sgpa3 = parseFloat(document.getElementById("sgpa3").value);
-  const sgpa4 = parseFloat(document.getElementById("sgpa4").value);
-  const usn = document.getElementById("usn").value.trim();
-
-  if ([sgpa1, sgpa2, sgpa3, sgpa4].some(val => isNaN(val))) {
-    alert("Please enter SGPA for all 4 semesters.");
-    return;
-  }
-
-  const cgpa = (sgpa1 + sgpa2 + sgpa3 + sgpa4) / 4;
-  document.getElementById("cgpaResult").className = `result-card ${gradeColor(cgpa)}`;
-  document.getElementById("cgpaResult").innerText = `Your CGPA is: ${cgpa.toFixed(2)}`;
-
-  // ✅ Send data to Google Sheet
-  fetch('https://script.google.com/macros/s/AKfycbzkg4WE_9TPhC78WERCPQgjZqL8msYgDTOY8_NrkJK2BYip-bd1MOFQK-aQPchwwFCJqA/exec', {
-    method: 'POST',
-    body: JSON.stringify({
-      usn: usn,
-      sgpa: sgpa4.toFixed(2),
-      sgpa1: sgpa1.toFixed(2),
-      sgpa2: sgpa2.toFixed(2),
-      sgpa3: sgpa3.toFixed(2),
-      sgpa4: sgpa4.toFixed(2),
-      cgpa: cgpa.toFixed(2)
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(res => console.log('Saved to Google Sheet'))
-    .catch(err => console.error('Error saving to sheet', err));
-}
-</script>
 </body>
 </html>
