@@ -3,20 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SGPA & CGPA Calculator by AIZEN</title>
+  <title>4th SEM SGPA + CGPA Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --primary: #4f46e5;
-      --secondary: #6366f1;
-      --danger: #ef4444;
-      --success: #22c55e;
-      --bg: #f0f4f8;
-    }
-    * {
-      box-sizing: border-box;
-    }
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #eef2f3, #dbe9f4);
@@ -26,7 +15,7 @@
       justify-content: center;
     }
     .card {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(10px);
       padding: 30px;
       max-width: 540px;
@@ -52,16 +41,11 @@
       border-radius: 8px;
       font-size: 15px;
       margin-top: 6px;
-      transition: all 0.3s;
-    }
-    input:focus, select:focus {
-      border-color: var(--primary);
-      outline: none;
     }
     button {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
       color: white;
       border: none;
       border-radius: 10px;
@@ -72,12 +56,6 @@
     }
     button:hover {
       transform: scale(1.03);
-    }
-    .error {
-      color: var(--danger);
-      font-size: 0.9rem;
-      margin-top: 4px;
-      transition: opacity 0.3s;
     }
     .result-card {
       margin-top: 20px;
@@ -101,21 +79,18 @@
       color: #991b1b;
       border-left: 5px solid #ef4444;
     }
+    .error {
+      color: red;
+      font-size: 0.9rem;
+    }
     hr {
       margin: 30px 0;
       border: none;
       border-top: 1px solid #ddd;
     }
-    @media (max-width: 600px) {
-      .card {
-        margin: 10px;
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
-
   <div class="card">
     <h2>🎓 4th Semester SGPA Calculator</h2>
 
@@ -187,6 +162,8 @@
   </div>
 
   <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6inmGozYrRW0vkNlRM8G0MLq2306SBEn8dNj0IhlXvQun5wwST0ex-LAw2-UekZrgHw/exec';
+
     function validateUSN() {
       const usn = document.getElementById("usn").value.trim();
       const regex = /^1BM23BA\d{3}$/i;
@@ -238,43 +215,36 @@
     }
 
     function calculateCGPA() {
-      const ids = ["sgpa1", "sgpa2", "sgpa3", "sgpa4"];
-      const sgpas = ids.map(id => parseFloat(document.getElementById(id).value));
+      if (!validateUSN()) return;
 
-      if (sgpas.some(val => isNaN(val))) {
+      const usn = document.getElementById("usn").value.trim();
+      const sgpa1 = parseFloat(document.getElementById("sgpa1").value);
+      const sgpa2 = parseFloat(document.getElementById("sgpa2").value);
+      const sgpa3 = parseFloat(document.getElementById("sgpa3").value);
+      const sgpa4 = parseFloat(document.getElementById("sgpa4").value);
+
+      if ([sgpa1, sgpa2, sgpa3, sgpa4].some(val => isNaN(val))) {
         alert("Please enter SGPA for all 4 semesters.");
         return;
       }
 
-      const cgpa = (sgpas.reduce((a, b) => a + b) / 4).toFixed(2);
+      const cgpa = ((sgpa1 + sgpa2 + sgpa3 + sgpa4) / 4).toFixed(2);
       const result = document.getElementById("cgpaResult");
       result.className = `result-card ${gradeColor(cgpa)}`;
       result.innerText = `Your CGPA is: ${cgpa}`;
-      // ✅ SEND DATA TO GOOGLE SHEETS
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbz6inmGozYrRW0vkNlRM8G0MLq2306SBEn8dNj0IhlXvQun5wwST0ex-LAw2-UekZrgHw/exec'; // REPLACE this
 
-      const payload = {
-        usn: usn,
-        sgpa: sgpa4.toFixed(2),
-        sgpa1: sgpas[0].toFixed(2),
-        sgpa2: sgpas[1].toFixed(2),
-        sgpa3: sgpas[2].toFixed(2),
-        sgpa4: sgpa4.toFixed(2),
-        cgpa: cgpa
-      };
-
+      // Send to Google Sheet
       fetch(scriptURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ usn, sgpa1, sgpa2, sgpa3, sgpa4, cgpa })
       })
       .then(res => res.text())
-      .then(text => console.log("✅ Sent to Google Sheet:", text))
-      .catch(err => console.error("❌ Error sending to sheet:", err));
-    }
+      .then(data => console.log("✅ Data recorded:", data))
+      .catch(err => console.error("❌ Error posting data:", err));
     }
   </script>
-
+    </script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7480BZDXWF"></script>
   <script>
