@@ -89,7 +89,36 @@
       border-top: 1px solid #ddd;
     }
   </style>
+
+  <!-- Firebase SDK (Modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtL42_T7cTCjh864TuAExlc47MD9N6imc",
+      authDomain: "cgpa-tracker-260c1.firebaseapp.com",
+      databaseURL: "https://cgpa-tracker-260c1-default-rtdb.firebaseio.com",
+      projectId: "cgpa-tracker-260c1",
+      storageBucket: "cgpa-tracker-260c1.appspot.com",
+      messagingSenderId: "202230876239",
+      appId: "1:202230876239:web:89cc588becbfd99efc823a",
+      measurementId: "G-8QK0Y8RXW4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+
+    // Make accessible globally
+    window.firebaseApp = app;
+    window.firebaseDB = database;
+    window.firebaseSet = set;
+    window.firebaseRef = ref;
+  </script>
 </head>
+
 <body>
   <div class="card">
     <h2>🎓 4th Semester SGPA Calculator</h2>
@@ -162,8 +191,6 @@
   </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6inmGozYrRW0vkNlRM8G0MLq2306SBEn8dNj0IhlXvQun5wwST0ex-LAw2-UekZrgHw/exec';
-
     function validateUSN() {
       const usn = document.getElementById("usn").value.trim();
       const regex = /^1BM23BA\d{3}$/i;
@@ -217,7 +244,7 @@
     function calculateCGPA() {
       if (!validateUSN()) return;
 
-      const usn = document.getElementById("usn").value.trim();
+      const usn = document.getElementById("usn").value.trim().toUpperCase();
       const sgpa1 = parseFloat(document.getElementById("sgpa1").value);
       const sgpa2 = parseFloat(document.getElementById("sgpa2").value);
       const sgpa3 = parseFloat(document.getElementById("sgpa3").value);
@@ -233,24 +260,23 @@
       result.className = `result-card ${gradeColor(cgpa)}`;
       result.innerText = `Your CGPA is: ${cgpa}`;
 
-      // Send to Google Sheet
-      fetch(scriptURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usn, sgpa1, sgpa2, sgpa3, sgpa4, cgpa })
+      const timestamp = new Date().toISOString();
+      firebaseSet(firebaseRef(firebaseDB, 'students/' + usn), {
+        usn,
+        sgpa1,
+        sgpa2,
+        sgpa3,
+        sgpa4,
+        cgpa,
+        timestamp
       })
-      .then(res => res.text())
-      .then(data => console.log("✅ Data recorded:", data))
-      .catch(err => console.error("❌ Error posting data:", err));
+      .then(() => {
+        console.log("✅ Data written to Firebase.");
+      })
+      .catch((error) => {
+        console.error("❌ Error writing to Firebase:", error);
+      });
     }
-  </script>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7480BZDXWF"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-7480BZDXWF');
   </script>
 </body>
 </html>
