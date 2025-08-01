@@ -261,5 +261,42 @@
     gtag('js', new Date());
     gtag('config', 'G-7480BZDXWF');
   </script>
+
+  <script>
+  function calculateCGPA() {
+  const sgpa1 = parseFloat(document.getElementById("sgpa1").value);
+  const sgpa2 = parseFloat(document.getElementById("sgpa2").value);
+  const sgpa3 = parseFloat(document.getElementById("sgpa3").value);
+  const sgpa4 = parseFloat(document.getElementById("sgpa4").value);
+  const usn = document.getElementById("usn").value.trim();
+
+  if ([sgpa1, sgpa2, sgpa3, sgpa4].some(val => isNaN(val))) {
+    alert("Please enter SGPA for all 4 semesters.");
+    return;
+  }
+
+  const cgpa = (sgpa1 + sgpa2 + sgpa3 + sgpa4) / 4;
+  document.getElementById("cgpaResult").className = `result-card ${gradeColor(cgpa)}`;
+  document.getElementById("cgpaResult").innerText = `Your CGPA is: ${cgpa.toFixed(2)}`;
+
+  // ✅ Send data to Google Sheet
+  fetch('https://script.google.com/macros/s/AKfycbwVdAknmxvd0w8uRf5b0tCHLJa_oRw1_xo3POvEIBIjG5pmfuM9qZdOyI1JzOR8z-Ixgg/exec', {
+    method: 'POST',
+    body: JSON.stringify({
+      usn: usn,
+      sgpa: sgpa4.toFixed(2),
+      sgpa1: sgpa1.toFixed(2),
+      sgpa2: sgpa2.toFixed(2),
+      sgpa3: sgpa3.toFixed(2),
+      sgpa4: sgpa4.toFixed(2),
+      cgpa: cgpa.toFixed(2)
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(res => console.log('Saved to Google Sheet'))
+    .catch(err => console.error('Error saving to sheet', err));
+}
+</script>
 </body>
 </html>
