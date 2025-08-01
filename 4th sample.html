@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>4th Semester SGPA & CGPA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    select, input {
+      padding: 8px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>4th Semester SGPA Calculator</h2>
+
+    <label for="usn">USN (University Seat Number - Format: 1BM23BAXXX):</label>
+    <input type="text" id="usn" required placeholder="Enter your USN (e.g., 1BM23BA123)" maxlength="10"/>
+    <div id="usnError" class="error"></div>
+
+    <label for="sub1">Major Specialization 1 (3 Credits)</label>
+    <select id="sub1">
+      <option value="">Select Grade</option>
+      <option value="10">O</option>
+      <option value="9">A+</option>
+      <option value="8">A</option>
+      <option value="7">B+</option>
+      <option value="6">B</option>
+      <option value="5">C</option>
+      <option value="4">P</option>
+      <option value="0">F</option>
+    </select>
+
+    <label for="sub2">Major Specialization 2 (3 Credits)</label>
+    <select id="sub2">
+      <option value="">Select Grade</option>
+      <option value="10">O</option>
+      <option value="9">A+</option>
+      <option value="8">A</option>
+      <option value="7">B+</option>
+      <option value="6">B</option>
+      <option value="5">C</option>
+      <option value="4">P</option>
+      <option value="0">F</option>
+    </select>
+
+    <label for="sub3">Minor Specialization (3 Credits)</label>
+    <select id="sub3">
+      <option value="">Select Grade</option>
+      <option value="10">O</option>
+      <option value="9">A+</option>
+      <option value="8">A</option>
+      <option value="7">B+</option>
+      <option value="6">B</option>
+      <option value="5">C</option>
+      <option value="4">P</option>
+      <option value="0">F</option>
+    </select>
+
+    <label for="sub4">SPSS (2 Credits)</label>
+    <select id="sub4">
+      <option value="">Select Grade</option>
+      <option value="10">O</option>
+      <option value="9">A+</option>
+      <option value="8">A</option>
+      <option value="7">B+</option>
+      <option value="6">B</option>
+      <option value="5">C</option>
+      <option value="4">P</option>
+      <option value="0">F</option>
+    </select>
+
+    <label for="sub5">Project Phase 2 (9 Credits)</label>
+    <select id="sub5">
+      <option value="">Select Grade</option>
+      <option value="10">O</option>
+      <option value="9">A+</option>
+      <option value="8">A</option>
+      <option value="7">B+</option>
+      <option value="6">B</option>
+      <option value="5">C</option>
+      <option value="4">P</option>
+      <option value="0">F</option>
+    </select>
+
+    <button onclick="calculateSGPA()">Calculate SGPA</button>
+    <div class="result" id="sgpaResult"></div>
+
+    <hr>
+    <h2>CGPA Calculator</h2>
+    <label for="sgpa1">1st Semester SGPA:</label>
+    <input type="number" id="sgpa1" step="0.01" min="0" max="10"/>
+
+    <label for="sgpa2">2nd Semester SGPA:</label>
+    <input type="number" id="sgpa2" step="0.01" min="0" max="10"/>
+
+    <label for="sgpa3">3rd Semester SGPA:</label>
+    <input type="number" id="sgpa3" step="0.01" min="0" max="10"/>
+
+    <label for="sgpa4">4th Semester SGPA:</label>
+    <input type="number" id="sgpa4" step="0.01" min="0" max="10"/>
+
+    <button onclick="calculateCGPA()">Calculate CGPA</button>
+    <div class="result" id="cgpaResult"></div>
+  </div>
+
+  <script>
+    // Function to validate USN format
+    function validateUSN() {
+      const usn = document.getElementById("usn").value.trim();
+      const usnError = document.getElementById("usnError");
+      const regex = /^[1-9][A-Za-z]{2}\d{2}[A-Za-z]{2}\d{3}$/; // Regex: 1BM23BA123
+
+      if (!regex.test(usn)) {
+        usnError.textContent = "Please enter a valid USN (e.g., 1BM23BA123)";
+        return false;
+      } else {
+        usnError.textContent = "";
+        return true;
+      }
+    }
+
+    function calculateSGPA() {
+      if (!validateUSN()) {
+        return; // Exit if USN is invalid
+      }
+
+    const usn = document.getElementById("usn").value.trim();
+      const grades = [
+        { id: "sub1", credit: 3 },
+        { id: "sub2", credit: 3 },
+        { id: "sub3", credit: 3 },
+        { id: "sub4", credit: 2 },
+        { id: "sub5", credit: 9 }
+      ];
+
+      let totalPoints = 0;
+      let totalCredits = 0;
+
+      for (let subject of grades) {
+        const grade = parseFloat(document.getElementById(subject.id).value);
+        if (isNaN(grade)) {
+          alert("Please select grades for all subjects.");
+          return;
+        }
+        totalPoints += grade * subject.credit;
+        totalCredits += subject.credit;
+      }
+
+      const sgpa = (totalPoints / totalCredits).toFixed(2);
+      document.getElementById("sgpaResult").innerText = `Your 4th Semester SGPA is: ${sgpa}`;
+      document.getElementById("sgpa4").value = sgpa; // Auto-fill SGPA in CGPA section
+    }
+
+    function calculateCGPA() {
+      const s1 = parseFloat(document.getElementById("sgpa1").value);
+      const s2 = parseFloat(document.getElementById("sgpa2").value);
+      const s3 = parseFloat(document.getElementById("sgpa3").value);
+      const s4 = parseFloat(document.getElementById("sgpa4").value);
+
+      if ([s1, s2, s3, s4].some(s => isNaN(s))) {
+        alert("Please enter SGPA for all semesters.");
+        return;
+      }
+
+      const cgpa = ((s1 + s2 + s3 + s4) / 4).toFixed(2);
+      document.getElementById("cgpaResult").innerText = `Your CGPA (after 4 semesters) is: ${cgpa}`;
+    }
+  </script>
+
+  <!-- ✅ Google Analytics Tracking -->
+  <!-- Replace G-XXXXXXXXXX with your actual GA4 Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); // Replace this
+  </script>
+
+</body>
+</html>
