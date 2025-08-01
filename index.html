@@ -280,7 +280,7 @@
   document.getElementById("cgpaResult").innerText = `Your CGPA is: ${cgpa.toFixed(2)}`;
 
   // ✅ Send data to Google Sheet
-  fetch('https://script.google.com/macros/s/AKfycbwVdAknmxvd0w8uRf5b0tCHLJa_oRw1_xo3POvEIBIjG5pmfuM9qZdOyI1JzOR8z-Ixgg/exec', {
+  fetch('https://script.google.com/macros/s/AKfycbzkg4WE_9TPhC78WERCPQgjZqL8msYgDTOY8_NrkJK2BYip-bd1MOFQK-aQPchwwFCJqA/exec', {
     method: 'POST',
     body: JSON.stringify({
       usn: usn,
