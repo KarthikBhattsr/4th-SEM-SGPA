@@ -111,7 +111,6 @@
     const analytics = getAnalytics(app);
     const database = getDatabase(app);
 
-    // Make accessible globally
     window.firebaseApp = app;
     window.firebaseDB = database;
     window.firebaseSet = set;
@@ -239,6 +238,21 @@
       result.className = `result-card ${gradeColor(sgpa)}`;
       result.innerText = `Your SGPA for 4th Semester is: ${sgpa}`;
       document.getElementById("sgpa4").value = sgpa;
+
+      const usn = document.getElementById("usn").value.trim().toUpperCase();
+      const timestamp = new Date().toISOString();
+      window.firebaseSet(window.firebaseRef(window.firebaseDB, 'sgpa_records/' + usn), {
+        usn,
+        sgpa: parseFloat(sgpa),
+        timestamp,
+        source: "SGPA Only"
+      })
+      .then(() => {
+        console.log("✅ SGPA data written to Firebase.");
+      })
+      .catch((error) => {
+        console.error("❌ Error writing SGPA to Firebase:", error);
+      });
     }
 
     function calculateCGPA() {
@@ -261,20 +275,20 @@
       result.innerText = `Your CGPA is: ${cgpa}`;
 
       const timestamp = new Date().toISOString();
-      firebaseSet(firebaseRef(firebaseDB, 'students/' + usn), {
+      window.firebaseSet(window.firebaseRef(window.firebaseDB, 'students/' + usn), {
         usn,
         sgpa1,
         sgpa2,
         sgpa3,
         sgpa4,
-        cgpa,
+        cgpa: parseFloat(cgpa),
         timestamp
       })
       .then(() => {
-        console.log("✅ Data written to Firebase.");
+        console.log("✅ CGPA data written to Firebase.");
       })
       .catch((error) => {
-        console.error("❌ Error writing to Firebase:", error);
+        console.error("❌ Error writing CGPA to Firebase:", error);
       });
     }
   </script>
