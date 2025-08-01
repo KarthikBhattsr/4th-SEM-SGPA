@@ -3,167 +3,214 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>4th Semester SGPA & CGPA Calculator</title>
+  <title>Modern SGPA + CGPA Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #6366f1;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --bg: #f0f4f8;
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #eef2f3, #dbe9f4);
+      margin: 0;
       padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      max-width: 540px;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
     }
     h2 {
-      color: #333;
+      text-align: center;
+      color: #111827;
+      margin-bottom: 20px;
     }
     label {
       display: block;
-      margin: 10px 0 5px;
+      margin-top: 15px;
+      font-weight: 600;
     }
-    select, input {
-      padding: 8px;
+    input, select {
       width: 100%;
-      margin-bottom: 15px;
+      padding: 12px;
+      border: 2px solid #e0e7ff;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-top: 6px;
+      transition: all 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      outline: none;
     }
     button {
-      padding: 10px 20px;
-      background: #007bff;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
       border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-top: 25px;
       cursor: pointer;
-      margin-top: 10px;
+      transition: transform 0.2s ease;
     }
     button:hover {
-      background: #0056b3;
+      transform: scale(1.03);
     }
-    .result {
+    .error {
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-top: 4px;
+      transition: opacity 0.3s;
+    }
+    .result-card {
       margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
       font-weight: bold;
+      font-size: 1.1rem;
     }
-    .container {
-      background: white;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    .result-green {
+      background: #dcfce7;
+      color: #166534;
+      border-left: 5px solid #22c55e;
+    }
+    .result-orange {
+      background: #fef9c3;
+      color: #92400e;
+      border-left: 5px solid #facc15;
+    }
+    .result-red {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 5px solid #ef4444;
+    }
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    @media (max-width: 600px) {
+      .card {
+        margin: 10px;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>4th Semester SGPA Calculator</h2>
+  <div class="card">
+    <h2>🎓 4th Semester SGPA Calculator</h2>
 
-    <label for="usn">USN (University Seat Number - Format: 1BM23BAXXX):</label>
-    <input type="text" id="usn" required placeholder="Enter your USN (e.g., 1BM23BA123)" maxlength="10"/>
+    <label for="usn">USN (e.g. 1BM23BA123):</label>
+    <input type="text" id="usn" maxlength="10" placeholder="1BM23BA123" required />
     <div id="usnError" class="error"></div>
 
     <label for="sub1">Major Specialization 1 (3 Credits)</label>
     <select id="sub1">
       <option value="">Select Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="5">C</option>
-      <option value="4">P</option>
-      <option value="0">F</option>
+      <option value="10">O</option><option value="9">A+</option><option value="8">A</option>
+      <option value="7">B+</option><option value="6">B</option><option value="5">C</option>
+      <option value="4">P</option><option value="0">F</option>
     </select>
 
     <label for="sub2">Major Specialization 2 (3 Credits)</label>
     <select id="sub2">
       <option value="">Select Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="5">C</option>
-      <option value="4">P</option>
-      <option value="0">F</option>
+      <option value="10">O</option><option value="9">A+</option><option value="8">A</option>
+      <option value="7">B+</option><option value="6">B</option><option value="5">C</option>
+      <option value="4">P</option><option value="0">F</option>
     </select>
 
     <label for="sub3">Minor Specialization (3 Credits)</label>
     <select id="sub3">
       <option value="">Select Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="5">C</option>
-      <option value="4">P</option>
-      <option value="0">F</option>
+      <option value="10">O</option><option value="9">A+</option><option value="8">A</option>
+      <option value="7">B+</option><option value="6">B</option><option value="5">C</option>
+      <option value="4">P</option><option value="0">F</option>
     </select>
 
     <label for="sub4">SPSS (2 Credits)</label>
     <select id="sub4">
       <option value="">Select Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="5">C</option>
-      <option value="4">P</option>
-      <option value="0">F</option>
+      <option value="10">O</option><option value="9">A+</option><option value="8">A</option>
+      <option value="7">B+</option><option value="6">B</option><option value="5">C</option>
+      <option value="4">P</option><option value="0">F</option>
     </select>
 
     <label for="sub5">Project Phase 2 (9 Credits)</label>
     <select id="sub5">
       <option value="">Select Grade</option>
-      <option value="10">O</option>
-      <option value="9">A+</option>
-      <option value="8">A</option>
-      <option value="7">B+</option>
-      <option value="6">B</option>
-      <option value="5">C</option>
-      <option value="4">P</option>
-      <option value="0">F</option>
+      <option value="10">O</option><option value="9">A+</option><option value="8">A</option>
+      <option value="7">B+</option><option value="6">B</option><option value="5">C</option>
+      <option value="4">P</option><option value="0">F</option>
     </select>
 
     <button onclick="calculateSGPA()">Calculate SGPA</button>
-    <div class="result" id="sgpaResult"></div>
+    <div id="sgpaResult" class="result-card"></div>
 
     <hr>
-    <h2>CGPA Calculator</h2>
+
+    <h2>📘 CGPA Calculator</h2>
+
     <label for="sgpa1">1st Semester SGPA:</label>
-    <input type="number" id="sgpa1" step="0.01" min="0" max="10"/>
+    <input type="number" id="sgpa1" step="0.1" min="0" max="10" />
 
     <label for="sgpa2">2nd Semester SGPA:</label>
-    <input type="number" id="sgpa2" step="0.01" min="0" max="10"/>
+    <input type="number" id="sgpa2" step="0.1" min="0" max="10" />
 
     <label for="sgpa3">3rd Semester SGPA:</label>
-    <input type="number" id="sgpa3" step="0.01" min="0" max="10"/>
+    <input type="number" id="sgpa3" step="0.1" min="0" max="10" />
 
     <label for="sgpa4">4th Semester SGPA:</label>
-    <input type="number" id="sgpa4" step="0.01" min="0" max="10"/>
+    <input type="number" id="sgpa4" step="0.1" min="0" max="10" readonly />
 
     <button onclick="calculateCGPA()">Calculate CGPA</button>
-    <div class="result" id="cgpaResult"></div>
+    <div id="cgpaResult" class="result-card"></div>
   </div>
 
   <script>
-    // Function to validate USN format
     function validateUSN() {
       const usn = document.getElementById("usn").value.trim();
-      const usnError = document.getElementById("usnError");
-      const regex = /^[1-9][A-Za-z]{2}\d{2}[A-Za-z]{2}\d{3}$/; // Regex: 1BM23BA123
+      const regex = /^1BM23BA\d{3}$/i;
+      const errorDiv = document.getElementById("usnError");
 
       if (!regex.test(usn)) {
-        usnError.textContent = "Please enter a valid USN (e.g., 1BM23BA123)";
+        errorDiv.textContent = "USN must start with '1BM23BA' and end with 3 digits.";
         return false;
       } else {
-        usnError.textContent = "";
+        errorDiv.textContent = "";
         return true;
       }
     }
 
-    function calculateSGPA() {
-      if (!validateUSN()) {
-        return; // Exit if USN is invalid
-      }
+    function gradeColor(sgpa) {
+      if (sgpa >= 9) return 'result-green';
+      else if (sgpa >= 7) return 'result-orange';
+      else return 'result-red';
+    }
 
-    const usn = document.getElementById("usn").value.trim();
-      const grades = [
+    function calculateSGPA() {
+      if (!validateUSN()) return;
+
+      const subjects = [
         { id: "sub1", credit: 3 },
         { id: "sub2", credit: 3 },
         { id: "sub3", credit: 3 },
@@ -171,49 +218,48 @@
         { id: "sub5", credit: 9 }
       ];
 
-      let totalPoints = 0;
-      let totalCredits = 0;
+      let total = 0, credits = 0;
 
-      for (let subject of grades) {
-        const grade = parseFloat(document.getElementById(subject.id).value);
+      for (let s of subjects) {
+        const grade = parseFloat(document.getElementById(s.id).value);
         if (isNaN(grade)) {
           alert("Please select grades for all subjects.");
           return;
         }
-        totalPoints += grade * subject.credit;
-        totalCredits += subject.credit;
+        total += grade * s.credit;
+        credits += s.credit;
       }
 
-      const sgpa = (totalPoints / totalCredits).toFixed(2);
-      document.getElementById("sgpaResult").innerText = `Your 4th Semester SGPA is: ${sgpa}`;
-      document.getElementById("sgpa4").value = sgpa; // Auto-fill SGPA in CGPA section
+      const sgpa = (total / credits).toFixed(2);
+      const result = document.getElementById("sgpaResult");
+      result.className = `result-card ${gradeColor(sgpa)}`;
+      result.innerText = `Your SGPA for 4th Semester is: ${sgpa}`;
+      document.getElementById("sgpa4").value = sgpa;
     }
 
     function calculateCGPA() {
-      const s1 = parseFloat(document.getElementById("sgpa1").value);
-      const s2 = parseFloat(document.getElementById("sgpa2").value);
-      const s3 = parseFloat(document.getElementById("sgpa3").value);
-      const s4 = parseFloat(document.getElementById("sgpa4").value);
+      const ids = ["sgpa1", "sgpa2", "sgpa3", "sgpa4"];
+      const sgpas = ids.map(id => parseFloat(document.getElementById(id).value));
 
-      if ([s1, s2, s3, s4].some(s => isNaN(s))) {
-        alert("Please enter SGPA for all semesters.");
+      if (sgpas.some(val => isNaN(val))) {
+        alert("Please enter SGPA for all 4 semesters.");
         return;
       }
 
-      const cgpa = ((s1 + s2 + s3 + s4) / 4).toFixed(2);
-      document.getElementById("cgpaResult").innerText = `Your CGPA (after 4 semesters) is: ${cgpa}`;
+      const cgpa = (sgpas.reduce((a, b) => a + b) / 4).toFixed(2);
+      const result = document.getElementById("cgpaResult");
+      result.className = `result-card ${gradeColor(cgpa)}`;
+      result.innerText = `Your CGPA is: ${cgpa}`;
     }
   </script>
 
-  <!-- ✅ Google Analytics Tracking -->
-  <!-- Replace G-XXXXXXXXXX with your actual GA4 Measurement ID -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7480BZDXWF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
+    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-7480BZDXWF'); // Replace this
+    gtag('config', 'G-7480BZDXWF');
   </script>
-
 </body>
 </html>
